@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0e0c">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Element Review. Morning huddle. Sample day — not a live feed. Not a PMS.">
+  <title>Element Review</title>
+  <!-- element-review-v1 -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <style>
+    :root {
+      --bg: #0d0e0c;
+      --fg: #f4f0e6;
+      --mute: #9a9588;
+      --line: #2c2b27;
+      --chip: #181916;
+      --amber: #e2a636;
+      --hurt: #d4785a;
+      --pad: max(1.05rem, env(safe-area-inset-left));
+      --pad-r: max(1.05rem, env(safe-area-inset-right));
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    body {
+      min-height: 100dvh;
+      padding: max(0.7rem, env(safe-area-inset-top)) var(--pad-r) max(2.2rem, env(safe-area-inset-bottom)) var(--pad);
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+    button, input, textarea {
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      appearance: none;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      color: var(--fg);
+      border-radius: 0.4rem;
+      min-height: 2.6rem;
+      padding: 0.4rem 0.75rem;
+      font-weight: 700;
+    }
+    button:active { filter: brightness(1.15); }
+    h1, h2, p { margin: 0; }
+
+    .kicker {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .sub {
+      margin-top: 0.2rem;
+      font-size: clamp(1.55rem, 7vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    h1.brand {
+      font-size: 0;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .banner {
+      margin: 0.85rem 0 0.9rem;
+      padding: 0.45rem 0.6rem;
+      border: 1px dashed var(--amber);
+      color: var(--amber);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+    .banner[hidden] { display: none; }
+
+    .date-hit {
+      position: relative;
+      display: block;
+      margin-top: 0.55rem;
+      min-height: 2.4rem;
+    }
+    .date-show {
+      font-size: clamp(1.45rem, 6.5vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+    }
+    .date-hit input[type="date"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+    }
+    .date-hint {
+      margin-top: 0.15rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    section { margin: 1.45rem 0 0; }
+    .sec-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 2px solid var(--fg);
+      padding-bottom: 0.25rem;
+    }
+    .sec-head h2 {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .sec-head .add {
+      min-height: 2.2rem;
+      min-width: 2.2rem;
+      padding: 0;
+      font-size: 1.35rem;
+      line-height: 1;
+      background: transparent;
+      border: 0;
+    }
+
+    .one-line, .prose {
+      outline: none;
+      min-height: 1.35em;
+      border-bottom: 1px solid transparent;
+    }
+    .one-line:focus, .prose:focus { border-bottom-color: var(--line); }
+    .one-line {
+      font-size: clamp(1.25rem, 5.4vw, 1.55rem);
+      font-weight: 750;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+    .one-line.score {
+      font-size: clamp(1.7rem, 8vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .prose {
+      font-size: clamp(1.12rem, 4.6vw, 1.32rem);
+      font-weight: 650;
+      line-height: 1.4;
+    }
+    .one-line:empty:before, .prose:empty:before {
+      content: attr(data-ph);
+      color: var(--mute);
+      font-weight: 650;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.55rem 0.45rem;
+      padding: 0.7rem 0 0.2rem;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+      min-width: 0;
+    }
+    .stat label {
+      font-size: 0.64rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .stat input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font-size: clamp(1.28rem, 5.6vw, 1.7rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      min-height: 2.1rem;
+    }
+
+    .days {
+      display: flex;
+      gap: 0.55rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin: 0.35rem calc(-1 * var(--pad)) 0.2rem;
+      padding: 0.15rem var(--pad) 0.55rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .day-card {
+      flex: 0 0 79%;
+      scroll-snap-align: start;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+      padding: 0.7rem 0.75rem 0.8rem;
+    }
+    .day-card .dhead {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem;
+      margin-bottom: 0.45rem;
+    }
+    .day-card .dow {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .day-card input.d-date {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font-size: clamp(1.45rem, 6.2vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      min-height: 2rem;
+    }
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.4rem;
+      border-top: 1px solid var(--line);
+      padding: 0.28rem 0;
+    }
+    .metric span {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .metric input {
+      width: 6.2rem;
+      max-width: 42vw;
+      background: transparent;
+      border: 0;
+      text-align: right;
+      padding: 0;
+      font-size: clamp(1.2rem, 5.2vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      min-height: 1.9rem;
+    }
+
+    .row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.45rem;
+      width: 100%;
+      border-bottom: 1px solid var(--line);
+      padding: 0.55rem 0;
+    }
+    .check-hit, .copy-hit {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      width: auto;
+      min-width: 0;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0.3rem 0;
+      min-height: 3.2rem;
+    }
+    .box {
+      flex: 0 0 2.75rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-top: 0.12rem;
+      border: 2px solid var(--mute);
+      border-radius: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1;
+      color: transparent;
+      background: transparent;
+    }
+    .row.checked .box {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--bg);
+    }
+    .row.checked .room { color: var(--amber); }
+    .copy { min-width: 0; flex: 1; }
+    .row .room {
+      font-size: clamp(1.45rem, 6.4vw, 1.95rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .row .why {
+      margin-top: 0.2rem;
+      font-size: clamp(1.02rem, 4.2vw, 1.18rem);
+      font-weight: 650;
+      line-height: 1.3;
+      color: #e6e1d4;
+    }
+    .row .meta {
+      margin-top: 0.16rem;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--mute);
+    }
+    .edit {
+      align-self: center;
+      flex: 0 0 auto;
+      min-width: 2.7rem;
+      min-height: 2.7rem;
+      padding: 0.4rem 0.55rem;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      border-radius: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .tag {
+      display: inline-block;
+      margin-left: 0.4rem;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      vertical-align: 0.22em;
+    }
+    .empty {
+      padding: 0.8rem 0 0.4rem;
+      color: var(--mute);
+      font-size: 1rem;
+      font-weight: 650;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      padding-top: 0.35rem;
+    }
+    .word-grid .stat input, .word-grid .stat [contenteditable] {
+      font-size: clamp(1.55rem, 7vw, 2rem);
+    }
+    #word-en, #word-es {
+      outline: none;
+      min-height: 1.3em;
+      font-size: clamp(1.55rem, 7vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      border-bottom: 1px solid transparent;
+    }
+    #word-en:focus, #word-es:focus { border-bottom-color: var(--line); }
+    #word-en:empty:before, #word-es:empty:before {
+      content: attr(data-ph);
+      color: var(--mute);
+      font-weight: 700;
+    }
+
+    .profile-name {
+      font-size: clamp(1.55rem, 7vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      outline: none;
+      min-height: 1.3em;
+      margin-top: 0.35rem;
+      border-bottom: 1px solid transparent;
+    }
+    .profile-name:focus { border-bottom-color: var(--line); }
+    .profile-name:empty:before {
+      content: attr(data-ph);
+      color: var(--mute);
+      font-weight: 700;
+    }
+    .fav {
+      display: grid;
+      grid-template-columns: 7.2rem 1fr;
+      gap: 0.35rem 0.55rem;
+      align-items: start;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .fav .lab, .fav .val {
+      outline: none;
+      min-height: 1.3em;
+    }
+    .fav .lab {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      padding-top: 0.2rem;
+    }
+    .fav .val {
+      font-size: clamp(1.05rem, 4.4vw, 1.22rem);
+      font-weight: 650;
+      line-height: 1.3;
+    }
+    .fav .lab:empty:before, .fav .val:empty:before {
+      content: attr(data-ph);
+      color: #6e6a60;
+    }
+    .tiny-add {
+      margin-top: 0.55rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    footer {
+      margin-top: 1.6rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--line);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+    .foot {
+      font-size: 0.8rem;
+      color: var(--mute);
+      line-height: 1.4;
+    }
+
+    #sheet {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.62);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 20;
+      padding: 0;
+    }
+    #sheet[hidden] { display: none; }
+    .panel {
+      width: 100%;
+      max-width: 28rem;
+      background: #161512;
+      border-top: 1px solid var(--line);
+      padding: 1rem var(--pad) max(1.2rem, env(safe-area-inset-bottom));
+      max-height: 92dvh;
+      overflow: auto;
+    }
+    .panel h3 {
+      margin: 0 0 0.8rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.65rem;
+    }
+    .field span {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .field input, .field textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 0.35rem;
+      padding: 0.65rem 0.7rem;
+      font-size: 16px;
+    }
+    .field textarea { min-height: 4.2rem; resize: vertical; }
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .panel-actions .primary {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+    .panel-actions .danger {
+      margin-left: auto;
+      color: var(--hurt);
+      background: transparent;
+      border-color: #4a2e26;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="kicker">Element Review</p>
+    <p class="sub">huddle</p>
+    <h1 class="brand">Element Review</h1>
+    <div class="banner" id="sample-banner">SAMPLE DAY · invented names and numbers · not a live feed · this device only</div>
+    <div class="date-hit">
+      <p class="date-show" id="date-label"></p>
+      <input type="date" id="huddle-date" aria-label="Huddle date">
+    </div>
+    <p class="date-hint">Date · tap to change</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="weather-h">
+      <div class="sec-head"><h2 id="weather-h">Weather</h2></div>
+      <div class="one-line" id="weather" contenteditable="true" spellcheck="false" data-ph="One line"></div>
+    </section>
+
+    <section aria-labelledby="score-h">
+      <div class="sec-head"><h2 id="score-h">GEI / TripAdvisor</h2></div>
+      <div class="one-line score" id="score" contenteditable="true" spellcheck="false" data-ph="Score"></div>
+    </section>
+
+    <section aria-labelledby="mission-h">
+      <div class="sec-head"><h2 id="mission-h">Mission Statement</h2></div>
+      <div class="prose" id="mission" contenteditable="true" spellcheck="true" data-ph="Tap to write"></div>
+    </section>
+
+    <section aria-labelledby="culture-h">
+      <div class="sec-head"><h2 id="culture-h">Culture Standard</h2></div>
+      <div class="prose" id="culture" contenteditable="true" spellcheck="true" data-ph="Tap to write"></div>
+    </section>
+
+    <section aria-labelledby="thought-h">
+      <div class="sec-head"><h2 id="thought-h">Thought of the Day</h2></div>
+      <div class="prose" id="thought" contenteditable="true" spellcheck="true" data-ph="Tap to write"></div>
+    </section>
+
+    <section aria-labelledby="safety-h">
+      <div class="sec-head"><h2 id="safety-h">Safety Topic</h2></div>
+      <div class="prose" id="safety" contenteditable="true" spellcheck="true" data-ph="Tap to write"></div>
+    </section>
+
+    <section aria-labelledby="last-h">
+      <div class="sec-head"><h2 id="last-h">Last night</h2></div>
+      <div class="stats" id="last-stats"></div>
+    </section>
+
+    <section aria-labelledby="today-h">
+      <div class="sec-head"><h2 id="today-h">Today</h2></div>
+      <div class="stats" id="today-stats"></div>
+    </section>
+
+    <section aria-labelledby="six-h">
+      <div class="sec-head"><h2 id="six-h">6-day forecast</h2></div>
+      <div class="days" id="six"></div>
+    </section>
+
+    <section aria-labelledby="eight-h">
+      <div class="sec-head"><h2 id="eight-h">Further 8-day</h2></div>
+      <div class="days" id="eight"></div>
+    </section>
+
+    <section aria-labelledby="meet-h">
+      <div class="sec-head">
+        <h2 id="meet-h">This week’s meeting rooms</h2>
+        <button class="add" type="button" data-add="meetings" aria-label="Add meeting room">+</button>
+      </div>
+      <div id="meetings"></div>
+    </section>
+
+    <section aria-labelledby="vip-h">
+      <div class="sec-head">
+        <h2 id="vip-h">VIP / Platinum arrivals</h2>
+        <button class="add" type="button" data-add="vips" aria-label="Add VIP arrival">+</button>
+      </div>
+      <div id="vips"></div>
+    </section>
+
+    <section aria-labelledby="events-h">
+      <div class="sec-head">
+        <h2 id="events-h">Events</h2>
+        <button class="add" type="button" data-add="events" aria-label="Add event">+</button>
+      </div>
+      <div id="events"></div>
+    </section>
+
+    <section aria-labelledby="bday-h">
+      <div class="sec-head">
+        <h2 id="bday-h">Colleague birthday / anniversary</h2>
+        <button class="add" type="button" data-add="birthdays" aria-label="Add birthday or anniversary">+</button>
+      </div>
+      <div id="birthdays"></div>
+    </section>
+
+    <section aria-labelledby="word-h">
+      <div class="sec-head"><h2 id="word-h">Word of the day</h2></div>
+      <div class="word-grid">
+        <div class="stat">
+          <label>English</label>
+          <div id="word-en" contenteditable="true" spellcheck="true" data-ph="Word"></div>
+        </div>
+        <div class="stat">
+          <label>Spanish</label>
+          <div id="word-es" contenteditable="true" spellcheck="true" data-ph="Palabra"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="profile-h">
+      <div class="sec-head"><h2 id="profile-h">Colleague profile of the week</h2></div>
+      <div class="profile-name" id="profile-name" contenteditable="true" spellcheck="false" data-ph="Name"></div>
+      <div id="profile-lines"></div>
+      <button class="tiny-add" type="button" id="add-line">+ Favorite line</button>
+    </section>
+  </main>
+
+  <footer>
+    <div class="actions">
+      <button type="button" id="use-sample">SAMPLE DAY</button>
+      <button type="button" id="clear-mine">Clear for my property</button>
+    </div>
+    <p class="foot">SAMPLE names and occupancy are invented — not last night, not a PMS, not a live feed. Tap a VIP to check them off. Every field is editable. This device only (localStorage).</p>
+  </footer>
+
+  <div id="sheet" hidden>
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <h3 id="sheet-title">Edit</h3>
+      <form id="sheet-form">
+        <label class="field" id="f-name"><span>Name</span><input name="name" autocomplete="off"></label>
+        <label class="field" id="f-rm"><span>RM</span><input name="rm" autocomplete="off"></label>
+        <label class="field" id="f-vip"><span>VIP</span><input name="vip" autocomplete="off"></label>
+        <label class="field" id="f-bg"><span>Background</span><textarea name="background" rows="3"></textarea></label>
+        <label class="field" id="f-spg"><span>SPG</span><input name="spg" autocomplete="off"></label>
+        <label class="field" id="f-co"><span>C/O</span><input name="co" autocomplete="off"></label>
+        <label class="field" id="f-when"><span>When</span><input name="when" autocomplete="off"></label>
+        <label class="field" id="f-notes"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
+        <label class="field" id="f-time"><span>Time</span><input name="time" autocomplete="off"></label>
+        <label class="field" id="f-loc"><span>Location</span><input name="location" autocomplete="off"></label>
+        <label class="field" id="f-desc"><span>Description</span><textarea name="description" rows="3"></textarea></label>
+        <label class="field" id="f-note"><span>Birthday / anniversary</span><input name="note" autocomplete="off"></label>
+        <div class="panel-actions">
+          <button type="submit" class="primary">Save</button>
+          <button type="button" id="sheet-cancel">Cancel</button>
+          <button type="button" class="danger" id="sheet-delete">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const KEY = 'element-review-v1';
+
+    const LAST_FIELDS = [
+      ['noShows', 'No Shows'],
+      ['totOcc', 'Tot Occ'],
+      ['totOccPct', 'Tot Occ%'],
+      ['paidOcc', 'Paid Occ'],
+      ['paidOccPct', 'Paid Occ%'],
+      ['avgRate', 'Avg Rate'],
+      ['roomRev', 'Room Rev'],
+      ['restoreRev', 'Restore Rev'],
+      ['guests', 'Guests']
+    ];
+    const TODAY_FIELDS = [
+      ['stayOvers', 'Stay overs'],
+      ['arrivals', 'Arrivals'],
+      ['departures', 'Departures'],
+      ['totOcc', 'Tot Occ'],
+      ['totOccPct', 'Tot Occ%'],
+      ['paidOcc', 'Paid Occ'],
+      ['paidOccPct', 'Paid Occ%'],
+      ['estRmRev', 'Est Rm Rev'],
+      ['guests', 'Guests']
+    ];
+    const SIX_METRICS = [
+      ['available', 'Available'],
+      ['occupied', 'Occupied'],
+      ['occupiedPct', 'Occupied %'],
+      ['arrivals', 'Arrivals'],
+      ['stayOvers', 'Stay overs'],
+      ['departures', 'Departures'],
+      ['guests', 'Guests']
+    ];
+    const EIGHT_METRICS = [
+      ['available', 'Available'],
+      ['oooOff', 'OOO & Off'],
+      ['occupied', 'Occupied'],
+      ['occupiedPct', 'Occupied %']
+    ];
+
+    const LISTS = {
+      meetings: { title: 'Meeting room', fields: ['name', 'when', 'notes'] },
+      vips: { title: 'VIP / Platinum', fields: ['name', 'rm', 'vip', 'background', 'spg', 'co'] },
+      events: { title: 'Event', fields: ['name', 'time', 'location', 'description'] },
+      birthdays: { title: 'Colleague', fields: ['name', 'note'] }
+    };
+    const FIELD_IDS = {
+      name: 'f-name', rm: 'f-rm', vip: 'f-vip', background: 'f-bg', spg: 'f-spg', co: 'f-co',
+      when: 'f-when', notes: 'f-notes', time: 'f-time', location: 'f-loc', description: 'f-desc', note: 'f-note'
+    };
+
+    function clone(x) { return JSON.parse(JSON.stringify(x)); }
+
+    function todayISO() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function addDaysISO(iso, n) {
+      const parts = String(iso || todayISO()).split('-').map(Number);
+      const dt = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+      dt.setDate(dt.getDate() + n);
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const d = String(dt.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + d;
+    }
+
+    function parseISO(iso) {
+      const parts = String(iso || '').split('-').map(Number);
+      return new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+    }
+
+    function formatLong(iso) {
+      try {
+        return new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(parseISO(iso));
+      } catch (e) {
+        return iso || '';
+      }
+    }
+
+    function formatDow(iso) {
+      try {
+        return new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(parseISO(iso));
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function formatShortDate(iso) {
+      try {
+        return new Intl.DateTimeFormat(undefined, { month: 'numeric', day: 'numeric' }).format(parseISO(iso));
+      } catch (e) {
+        return iso || '';
+      }
+    }
+
+    function blankNums(keys) {
+      const o = {};
+      keys.forEach((k) => { o[k] = ''; });
+      return o;
+    }
+
+    function blankSix(huddle) {
+      return Array.from({ length: 6 }, (_, i) => Object.assign(
+        { date: addDaysISO(huddle, i + 1) },
+        blankNums(['available', 'occupied', 'occupiedPct', 'arrivals', 'stayOvers', 'departures', 'guests'])
+      ));
+    }
+
+    function blankEight(huddle) {
+      return Array.from({ length: 8 }, (_, i) => Object.assign(
+        { date: addDaysISO(huddle, i + 7) },
+        blankNums(['available', 'oooOff', 'occupied', 'occupiedPct'])
+      ));
+    }
+
+    function emptyState(huddle) {
+      const d = huddle || todayISO();
+      return {
+        sample: false,
+        huddleDate: d,
+        weather: '',
+        score: '',
+        mission: '',
+        culture: '',
+        thought: '',
+        safety: '',
+        lastNight: blankNums(LAST_FIELDS.map((x) => x[0])),
+        today: blankNums(TODAY_FIELDS.map((x) => x[0])),
+        six: blankSix(d),
+        eight: blankEight(d),
+        meetings: [],
+        vips: [],
+        events: [],
+        birthdays: [],
+        wordEn: '',
+        wordEs: '',
+        profileName: '',
+        profileLines: []
+      };
+    }
+
+    function sampleState() {
+      const d = todayISO();
+      const s = emptyState(d);
+      s.sample = true;
+      s.weather = 'High 74, afternoon wind. Overnight 51, clear.';
+      s.score = 'GEI 88 · TA 4.6';
+      s.mission = 'Smart, Alive, Balance';
+      s.culture = 'Open Communication: We promote open communication, innovation and creativity. Communication is the key to exceeding our guests\' expectations.';
+      s.thought = 'Walk a guest floor before the first arrival. See it the way they will.';
+      s.safety = 'Wet floors — cones out before the mop, cones stay until dry.';
+      s.lastNight = {
+        noShows: '1', totOcc: '91', totOccPct: '78%', paidOcc: '84', paidOccPct: '72%',
+        avgRate: '$176', roomRev: '$14,784', restoreRev: '$64', guests: '144'
+      };
+      s.today = {
+        stayOvers: '71', arrivals: '26', departures: '20', totOcc: '97', totOccPct: '84%',
+        paidOcc: '90', paidOccPct: '78%', estRmRev: '$16,110', guests: '156'
+      };
+      const sixNums = [
+        ['22', '94', '81%', '23', '71', '20', '148'],
+        ['28', '88', '76%', '18', '70', '24', '139'],
+        ['41', '75', '65%', '12', '63', '25', '118'],
+        ['19', '97', '84%', '31', '66', '9', '155'],
+        ['33', '83', '72%', '16', '67', '30', '130'],
+        ['48', '68', '59%', '14', '54', '29', '102']
+      ];
+      s.six = sixNums.map((row, i) => ({
+        date: addDaysISO(d, i + 1),
+        available: row[0], occupied: row[1], occupiedPct: row[2],
+        arrivals: row[3], stayOvers: row[4], departures: row[5], guests: row[6]
+      }));
+      const eightNums = [
+        ['52', '2', '62', '53%'],
+        ['44', '0', '72', '62%'],
+        ['37', '1', '78', '67%'],
+        ['21', '0', '95', '82%'],
+        ['29', '3', '84', '72%'],
+        ['58', '0', '58', '50%'],
+        ['61', '0', '55', '47%'],
+        ['40', '1', '75', '65%']
+      ];
+      s.eight = eightNums.map((row, i) => ({
+        date: addDaysISO(d, i + 7),
+        available: row[0], oooOff: row[1], occupied: row[2], occupiedPct: row[3]
+      }));
+      s.meetings = [
+        { id: 's-m1', name: 'Studio', when: 'Mon 10a–2p', notes: 'Regional sales', sample: true },
+        { id: 's-m2', name: 'Kitchen Table', when: 'Wed 8a', notes: 'Chef tasting', sample: true }
+      ];
+      s.vips = [
+        { id: 's-v1', name: 'Hale', rm: '412', vip: 'Platinum', background: 'Returning for a conference', spg: 'Platinum', co: 'Day 4', sample: true, checked: false },
+        { id: 's-v2', name: 'Ortiz', rm: '205', vip: 'Gold', background: 'First stay. Late van.', spg: 'Gold', co: 'Day 3', sample: true, checked: false },
+        { id: 's-v3', name: 'Brennan', rm: '330', vip: 'Platinum', background: 'Anniversary. Quiet floor.', spg: 'Platinum', co: 'Day 5', sample: true, checked: false }
+      ];
+      s.events = [
+        { id: 's-e1', name: 'Morning yoga', time: '7:00a', location: 'Courtyard', description: 'Weather call at 6:30a', sample: true },
+        { id: 's-e2', name: 'Sales mixer', time: '5:30p', location: 'Studio', description: '24 expected', sample: true }
+      ];
+      s.birthdays = [
+        { id: 's-b1', name: 'Jordan P.', note: 'Birthday', sample: true },
+        { id: 's-b2', name: 'Sam T.', note: '4 years', sample: true }
+      ];
+      s.wordEn = 'Towel';
+      s.wordEs = 'Toalla';
+      s.profileName = 'Maya R.';
+      s.profileLines = [
+        { id: 's-p1', label: 'Favorite food', value: 'Black bean tacos' },
+        { id: 's-p2', label: 'Favorite color', value: 'Forest green' },
+        { id: 's-p3', label: 'Favorite book', value: 'The Left Hand of Darkness' },
+        { id: 's-p4', label: 'Favorite music', value: 'Trombone Shorty' },
+        { id: 's-p5', label: 'Favorite hobby', value: 'Trail running' }
+      ];
+      return s;
+    }
+
+    function padForecast(arr, n, factory) {
+      const out = Array.isArray(arr) ? arr.slice(0, n) : [];
+      while (out.length < n) out.push(factory(out.length));
+      return out;
+    }
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return sampleState();
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return sampleState();
+        const base = emptyState(parsed.huddleDate || todayISO());
+        const d = parsed.huddleDate || base.huddleDate;
+        return {
+          sample: !!parsed.sample,
+          huddleDate: d,
+          weather: parsed.weather != null ? String(parsed.weather) : '',
+          score: parsed.score != null ? String(parsed.score) : '',
+          mission: parsed.mission != null ? String(parsed.mission) : '',
+          culture: parsed.culture != null ? String(parsed.culture) : '',
+          thought: parsed.thought != null ? String(parsed.thought) : '',
+          safety: parsed.safety != null ? String(parsed.safety) : '',
+          lastNight: Object.assign(base.lastNight, parsed.lastNight || {}),
+          today: Object.assign(base.today, parsed.today || {}),
+          six: padForecast(parsed.six, 6, (i) => blankSix(d)[i]),
+          eight: padForecast(parsed.eight, 8, (i) => blankEight(d)[i]),
+          meetings: Array.isArray(parsed.meetings) ? parsed.meetings : [],
+          vips: Array.isArray(parsed.vips) ? parsed.vips : [],
+          events: Array.isArray(parsed.events) ? parsed.events : [],
+          birthdays: Array.isArray(parsed.birthdays) ? parsed.birthdays : [],
+          wordEn: parsed.wordEn != null ? String(parsed.wordEn) : '',
+          wordEs: parsed.wordEs != null ? String(parsed.wordEs) : '',
+          profileName: parsed.profileName != null ? String(parsed.profileName) : '',
+          profileLines: Array.isArray(parsed.profileLines) ? parsed.profileLines : []
+        };
+      } catch (e) {
+        return sampleState();
+      }
+    }
+
+    function save() {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }
+
+    function uid(prefix) {
+      return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function fillEditable(id, value) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (document.activeElement === el) return;
+      const v = value || '';
+      if (el.tagName === 'INPUT') {
+        if (el.value !== v) el.value = v;
+      } else if (el.textContent !== v) {
+        el.textContent = v;
+      }
+    }
+
+    function bindEditable(id, key) {
+      const el = document.getElementById(id);
+      const write = () => {
+        state[key] = (el.textContent || '').replace(/\u00a0/g, ' ').trim();
+        save();
+      };
+      el.addEventListener('blur', write);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && id !== 'mission' && id !== 'culture' && id !== 'thought' && id !== 'safety') {
+          e.preventDefault();
+          el.blur();
+        }
+      });
+    }
+
+    function renderStats(hostId, fields, obj, prefix) {
+      const host = document.getElementById(hostId);
+      const active = document.activeElement;
+      const activeBind = active && active.getAttribute && active.getAttribute('data-bind');
+      if (host.childElementCount && activeBind && activeBind.indexOf(prefix) === 0) return;
+      host.innerHTML = fields.map(([key, label]) => {
+        const bind = prefix + '.' + key;
+        return '<div class="stat"><label for="' + bind.replace(/\./g, '-') + '">' + escapeHtml(label) + '</label>' +
+          '<input id="' + bind.replace(/\./g, '-') + '" data-bind="' + bind + '" value="' + escapeHtml(obj[key] || '') + '" autocomplete="off"></div>';
+      }).join('');
+    }
+
+    function renderDays(hostId, days, metrics, prefix) {
+      const host = document.getElementById(hostId);
+      const active = document.activeElement;
+      const activeBind = active && active.getAttribute && active.getAttribute('data-bind');
+      if (host.childElementCount && activeBind && activeBind.indexOf(prefix) === 0) return;
+      host.innerHTML = days.map((day, i) => {
+        const dateBind = prefix + '.' + i + '.date';
+        const sample = state.sample ? '<span class="tag">SAMPLE</span>' : '';
+        const metricsHtml = metrics.map(([key, label]) => {
+          const bind = prefix + '.' + i + '.' + key;
+          return '<label class="metric"><span>' + escapeHtml(label) + '</span>' +
+            '<input data-bind="' + bind + '" value="' + escapeHtml(day[key] || '') + '" autocomplete="off"></label>';
+        }).join('');
+        return '<article class="day-card">' +
+          '<div class="dhead"><span class="dow">' + escapeHtml(formatDow(day.date)) + ' · day ' + (i + 1) + sample + '</span></div>' +
+          '<input class="d-date" data-bind="' + dateBind + '" value="' + escapeHtml(formatShortDate(day.date) || day.date || '') + '" aria-label="Date" autocomplete="off">' +
+          metricsHtml + '</article>';
+      }).join('');
+    }
+
+    function renderList(kind) {
+      const host = document.getElementById(kind);
+      const items = state[kind] || [];
+      if (!items.length) {
+        host.innerHTML = '<p class="empty">None. + to add.</p>';
+        return;
+      }
+      host.innerHTML = items.map((it) => {
+        const tag = it.sample ? '<span class="tag">SAMPLE</span>' : '';
+        const cls = 'row' + (it.checked ? ' checked' : '');
+        let title, sub, meta;
+        if (kind === 'vips') {
+          title = it.name || 'VIP';
+          sub = [it.rm ? 'RM ' + it.rm : '', it.vip, it.background].filter(Boolean).join(' · ');
+          meta = [it.spg ? 'SPG ' + it.spg : '', it.co ? 'C/O ' + it.co : ''].filter(Boolean).join(' · ');
+        } else if (kind === 'events') {
+          title = it.name || 'Event';
+          sub = [it.time, it.location].filter(Boolean).join(' · ');
+          meta = it.description || '';
+        } else if (kind === 'meetings') {
+          title = it.name || 'Room';
+          sub = it.when || '';
+          meta = it.notes || '';
+        } else {
+          title = it.name || 'Colleague';
+          sub = it.note || '';
+          meta = '';
+        }
+        const isVip = kind === 'vips';
+        const checkLabel = (it.checked ? 'Uncheck ' : 'Check off ') + title;
+        const hitClass = isVip ? 'check-hit' : 'copy-hit';
+        const box = isVip
+          ? '<span class="box" aria-hidden="true">' + (it.checked ? '✓' : '') + '</span>'
+          : '';
+        const aria = isVip ? ' aria-pressed="' + (it.checked ? 'true' : 'false') + '" aria-label="' + escapeHtml(checkLabel) + '"' : '';
+        return '<div class="' + cls + '" data-kind="' + kind + '" data-id="' + escapeHtml(it.id) + '">' +
+          '<button type="button" class="' + hitClass + '"' + aria + '>' + box +
+          '<span class="copy"><div class="room">' + escapeHtml(title) + tag + '</div>' +
+          (sub ? '<div class="why">' + escapeHtml(sub) + '</div>' : '') +
+          (meta ? '<div class="meta">' + escapeHtml(meta) + '</div>' : '') +
+          '</span></button>' +
+          '<button type="button" class="edit" data-kind="' + kind + '" data-id="' + escapeHtml(it.id) + '" aria-label="Edit ' + escapeHtml(title) + '">Edit</button>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderProfileLines() {
+      const host = document.getElementById('profile-lines');
+      const active = document.activeElement;
+      const activeBind = active && active.getAttribute && active.getAttribute('data-bind');
+      if (host.childElementCount && activeBind && activeBind.indexOf('profileLines.') === 0) return;
+      const lines = state.profileLines || [];
+      if (!lines.length) {
+        host.innerHTML = '<p class="empty">No favorite lines. Add one.</p>';
+        return;
+      }
+      host.innerHTML = lines.map((ln, i) => {
+        return '<div class="fav" data-i="' + i + '">' +
+          '<div class="lab" contenteditable="true" data-bind="profileLines.' + i + '.label" data-ph="Label">' + escapeHtml(ln.label || '') + '</div>' +
+          '<div class="val" contenteditable="true" data-bind="profileLines.' + i + '.value" data-ph="Favorite">' + escapeHtml(ln.value || '') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function realignForecastDates() {
+      const d = state.huddleDate || todayISO();
+      (state.six || []).forEach((day, i) => { day.date = addDaysISO(d, i + 1); });
+      (state.eight || []).forEach((day, i) => { day.date = addDaysISO(d, i + 7); });
+    }
+
+    let state = load();
+    let editing = null;
+
+    function render(forceDays) {
+      document.getElementById('sample-banner').hidden = !state.sample;
+      document.getElementById('huddle-date').value = state.huddleDate || todayISO();
+      document.getElementById('date-label').textContent = formatLong(state.huddleDate || todayISO());
+      fillEditable('weather', state.weather);
+      fillEditable('score', state.score);
+      fillEditable('mission', state.mission);
+      fillEditable('culture', state.culture);
+      fillEditable('thought', state.thought);
+      fillEditable('safety', state.safety);
+      fillEditable('word-en', state.wordEn);
+      fillEditable('word-es', state.wordEs);
+      fillEditable('profile-name', state.profileName);
+      renderStats('last-stats', LAST_FIELDS, state.lastNight, 'lastNight');
+      renderStats('today-stats', TODAY_FIELDS, state.today, 'today');
+      if (forceDays) {
+        document.getElementById('six').innerHTML = '';
+        document.getElementById('eight').innerHTML = '';
+      }
+      renderDays('six', state.six, SIX_METRICS, 'six');
+      renderDays('eight', state.eight, EIGHT_METRICS, 'eight');
+      renderList('meetings');
+      renderList('vips');
+      renderList('events');
+      renderList('birthdays');
+      renderProfileLines();
+    }
+
+    function getAt(obj, path) {
+      return path.split('.').reduce((o, k) => {
+        if (o == null) return o;
+        return o[/^\d+$/.test(k) ? Number(k) : k];
+      }, obj);
+    }
+
+    function setAt(obj, path, value) {
+      const parts = path.split('.');
+      let o = obj;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const k = /^\d+$/.test(parts[i]) ? Number(parts[i]) : parts[i];
+        if (o[k] == null || typeof o[k] !== 'object') o[k] = {};
+        o = o[k];
+      }
+      const last = parts[parts.length - 1];
+      o[/^\d+$/.test(last) ? Number(last) : last] = value;
+    }
+
+    function readDateInput(raw, fallbackISO) {
+      const t = String(raw || '').trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
+      const m = t.match(/^(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?$/);
+      if (m) {
+        const year = m[3] ? (m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3])) : parseISO(fallbackISO).getFullYear();
+        return addDaysISO(year + '-' + String(m[1]).padStart(2, '0') + '-' + String(m[2]).padStart(2, '0'), 0);
+      }
+      return fallbackISO;
+    }
+
+    document.body.addEventListener('change', (e) => {
+      const el = e.target.closest('[data-bind]');
+      if (!el) return;
+      let val = el.value;
+      const bind = el.getAttribute('data-bind');
+      if (/\.date$/.test(bind)) {
+        const cur = getAt(state, bind) || state.huddleDate;
+        val = readDateInput(val, cur);
+        el.value = formatShortDate(val);
+      }
+      setAt(state, bind, val);
+      save();
+    });
+    document.body.addEventListener('blur', (e) => {
+      const el = e.target.closest('[data-bind]');
+      if (!el) return;
+      if (el.tagName === 'INPUT') {
+        let val = el.value;
+        const bind = el.getAttribute('data-bind');
+        if (/\.date$/.test(bind)) {
+          val = readDateInput(val, getAt(state, bind) || state.huddleDate);
+          el.value = formatShortDate(val);
+        }
+        setAt(state, bind, val);
+        save();
+        return;
+      }
+      const val = (el.textContent || '').replace(/\u00a0/g, ' ').trim();
+      setAt(state, el.getAttribute('data-bind'), val);
+      save();
+    }, true);
+
+    bindEditable('weather', 'weather');
+    bindEditable('score', 'score');
+    bindEditable('mission', 'mission');
+    bindEditable('culture', 'culture');
+    bindEditable('thought', 'thought');
+    bindEditable('safety', 'safety');
+    bindEditable('word-en', 'wordEn');
+    bindEditable('word-es', 'wordEs');
+    bindEditable('profile-name', 'profileName');
+
+    document.getElementById('huddle-date').addEventListener('change', (e) => {
+      state.huddleDate = e.target.value || todayISO();
+      realignForecastDates();
+      save();
+      render(true);
+    });
+
+    document.getElementById('add-line').addEventListener('click', () => {
+      if (!Array.isArray(state.profileLines)) state.profileLines = [];
+      state.profileLines.push({ id: uid('p'), label: '', value: '' });
+      save();
+      document.getElementById('profile-lines').innerHTML = '';
+      renderProfileLines();
+    });
+
+    function findItem(kind, id) {
+      return (state[kind] || []).find((it) => it.id === id);
+    }
+
+    function openSheet(kind, item) {
+      editing = { kind, id: item ? item.id : null, isNew: !item };
+      const spec = LISTS[kind];
+      document.getElementById('sheet-title').textContent = (item ? 'Edit' : 'Add') + ' · ' + spec.title;
+      const form = document.getElementById('sheet-form');
+      ['name', 'rm', 'vip', 'background', 'spg', 'co', 'when', 'notes', 'time', 'location', 'description', 'note'].forEach((k) => {
+        if (form.elements[k]) form.elements[k].value = item && item[k] ? item[k] : '';
+      });
+      Object.keys(FIELD_IDS).forEach((k) => {
+        document.getElementById(FIELD_IDS[k]).hidden = spec.fields.indexOf(k) === -1;
+      });
+      document.getElementById('sheet-delete').hidden = !item;
+      document.getElementById('sheet').hidden = false;
+      const first = spec.fields[0];
+      const el = form.elements[first];
+      if (el) setTimeout(() => el.focus(), 50);
+    }
+
+    function closeSheet() {
+      document.getElementById('sheet').hidden = true;
+      editing = null;
+    }
+
+    document.getElementById('sheet-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!editing) return;
+      const form = document.getElementById('sheet-form');
+      const spec = LISTS[editing.kind];
+      const vals = {};
+      spec.fields.forEach((k) => { vals[k] = (form.elements[k].value || '').trim(); });
+      if (editing.isNew) {
+        state[editing.kind].push(Object.assign({ id: uid(editing.kind[0]), sample: false, checked: false }, vals));
+      } else {
+        const item = findItem(editing.kind, editing.id);
+        if (item) Object.assign(item, vals);
+      }
+      save();
+      render();
+      closeSheet();
+    });
+    document.getElementById('sheet-cancel').addEventListener('click', closeSheet);
+    document.getElementById('sheet').addEventListener('click', (e) => {
+      if (e.target.id === 'sheet') closeSheet();
+    });
+    document.getElementById('sheet-delete').addEventListener('click', () => {
+      if (!editing || !editing.id) return;
+      state[editing.kind] = (state[editing.kind] || []).filter((it) => it.id !== editing.id);
+      save();
+      render();
+      closeSheet();
+    });
+
+    document.body.addEventListener('click', (e) => {
+      const add = e.target.closest('[data-add]');
+      if (add) {
+        openSheet(add.getAttribute('data-add'), null);
+        return;
+      }
+      const edit = e.target.closest('.edit');
+      if (edit) {
+        const kind = edit.getAttribute('data-kind');
+        const item = findItem(kind, edit.getAttribute('data-id'));
+        if (item) openSheet(kind, item);
+        return;
+      }
+      const hit = e.target.closest('.check-hit');
+      if (hit) {
+        const row = hit.closest('.row');
+        if (!row) return;
+        const item = findItem(row.getAttribute('data-kind'), row.getAttribute('data-id'));
+        if (!item) return;
+        item.checked = !item.checked;
+        save();
+        render();
+        return;
+      }
+      const copy = e.target.closest('.copy-hit');
+      if (copy) {
+        const row = copy.closest('.row');
+        if (!row) return;
+        const kind = row.getAttribute('data-kind');
+        const item = findItem(kind, row.getAttribute('data-id'));
+        if (item) openSheet(kind, item);
+      }
+    });
+
+    document.getElementById('use-sample').addEventListener('click', () => {
+      state = sampleState();
+      save();
+      render(true);
+    });
+    document.getElementById('clear-mine').addEventListener('click', () => {
+      state = emptyState(todayISO());
+      save();
+      render(true);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !document.getElementById('sheet').hidden) closeSheet();
+    });
+
+    render(true);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
