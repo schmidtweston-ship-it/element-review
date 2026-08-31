@@ -1,0 +1,14 @@
+{
+  "name": "Element Review",
+  "short_name": "Review",
+  "description": "Morning huddle. Element Review. Not a PMS.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d0e0c",
+  "theme_color": "#0d0e0c",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
